@@ -4,10 +4,11 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
-public class InputListener implements MouseListener,KeyListener{
+public class InputListener implements MouseListener, KeyListener {
 
-	public InputListener(){}
-	
+	public InputListener() {
+	}
+
 	@Override
 	public void inputEnded() {
 	}
@@ -27,27 +28,27 @@ public class InputListener implements MouseListener,KeyListener{
 
 	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseClicked(arg0, arg1, arg2,arg3);
+		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseClicked(arg0, arg1, arg2,arg3);
+		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseClicked(arg0, arg1, arg2,arg3);
+		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mousePressed(int arg0, int arg1, int arg2) {
-		Engine.game.mousePressed(arg0,arg1,arg2);
+		Engine.game.mousePressed(arg0, arg1, arg2);
 	}
 
 	@Override
 	public void mouseReleased(int arg0, int arg1, int arg2) {
-		Engine.game.mouseReleased(arg0,arg1,arg2);
+		Engine.game.mouseReleased(arg0, arg1, arg2);
 	}
 
 	@Override

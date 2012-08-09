@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class DebugProfiler {
 
-	private int x = 0,y = 0;
+	private int x = 0, y = 0;
 	private String name = "";
 	private long firstTime = 0L;
 	private long lastTime = 0L;
@@ -34,6 +34,15 @@ public class DebugProfiler {
 		lastTime = time;
 	}
 
+	public void startEndSection(String name) {
+		long time = System.currentTimeMillis();
+		long thisTime = time - sectionTime;
+		extraTimes.add(sectionName + ": " + thisTime + "ms");
+		sectionName = name;
+		time = System.currentTimeMillis();
+		sectionTime = time;
+	}
+
 	public void startSection(String name) {
 		sectionName = name;
 		long time = System.currentTimeMillis();
@@ -49,10 +58,11 @@ public class DebugProfiler {
 	}
 
 	public void drawTimes() {
-		Rendering.drawFont(x, y, name + ": " + (lastTime - firstTime) + "ms", 255, 255, 255);
+		Rendering.drawFont(x, y, name + ": " + (lastTime - firstTime) + "ms",
+				255, 255, 255);
 		int num = 1;
-		for(String s : extraTimes) {
-			Rendering.drawFont(x + 3, y + num*10, s, 255, 255, 255);
+		for (String s : extraTimes) {
+			Rendering.drawFont(x + 3, y + num * 10, s, 255, 255, 255);
 			num++;
 		}
 	}
