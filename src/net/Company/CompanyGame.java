@@ -3,7 +3,7 @@ package net.Company;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
-public class CompanyGame {
+public abstract class CompanyGame {
 
 	public Engine engine;
 	
@@ -81,4 +81,9 @@ public class CompanyGame {
 	{
 	}
 
+	public void inputEnded() {
+	}
+
+	public void inputStarted() {
+	}
 }
