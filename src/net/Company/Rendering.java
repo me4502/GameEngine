@@ -11,7 +11,7 @@ import org.newdawn.slick.font.GlyphPage;
 import org.newdawn.slick.font.effects.ColorEffect;
 
 public class Rendering {
-	
+
 	static UnicodeFont font = new UnicodeFont(new Font("Verdana", Font.BOLD, 8));
 
 	@SuppressWarnings("unchecked")
@@ -48,9 +48,8 @@ public class Rendering {
 		GL11.glEnd();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
-	
-	public static void drawBlob(int x, int y, float r, float g, float b,
-			float a) {
+
+	public static void drawBlob(int x, int y, float r, float g, float b, float a) {
 		GL11.glPushMatrix();
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_NORMALIZE);
@@ -66,7 +65,7 @@ public class Rendering {
 		GL11.glDisable(GL11.GL_POINT_SMOOTH);
 		GL11.glPopMatrix();
 	}
-	
+
 	public static void drawFire(int x, int y, float r, float g, float b, float a) {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPointSize(3f);
@@ -143,31 +142,31 @@ public class Rendering {
 	}
 
 	public static int PIXRGB(int r, int g, int b) {
-		return (0xFF000000 | ((r) << 16) | ((g) << 8) | ((b)));
+		return 0xFF000000 | r << 16 | g << 8 | b;
 	}
 
 	public static int PIXRGBA(int r, int g, int b, int a) {
-		return (((a) << 24) | ((r) << 16) | ((g) << 8) | ((b)));
+		return a << 24 | r << 16 | g << 8 | b;
 	}
 
 	public static int PIXA(int x) {
-		return (((x) >> 24) & 0xFF);
+		return x >> 24 & 0xFF;
 	}
 
 	public static int PIXR(int x) {
-		return (((x) >> 16) & 0xFF);
+		return x >> 16 & 0xFF;
 	}
 
 	public static int PIXG(int x) {
-		return (((x) >> 8) & 0xFF);
+		return x >> 8 & 0xFF;
 	}
 
 	public static int PIXB(int x) {
-		return ((x) & 0xFF);
+		return x & 0xFF;
 	}
 
 	public static int PIXPACK(int x) {
-		return (0xFF000000 | ((x) & 0xFFFFFF));
+		return 0xFF000000 | x & 0xFFFFFF;
 	}
 
 	public static void drawLine(int i, int j, int k, int l, int i1, float r,
