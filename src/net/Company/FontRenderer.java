@@ -20,6 +20,10 @@ public class FontRenderer {
 		font = new UnicodeFont(new Font(fontName, fontType, size));
 	}
 
+	public void setSize(int size) {
+		this.size = size;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void init() {
 		try {
@@ -42,5 +46,10 @@ public class FontRenderer {
 	public void drawFont(int x, int y, String text, float r, float g, float b) {
 		Color c = new Color(r, g, b);
 		font.drawString(x, y, text, c);
+	}
+
+	public void drawCentredFont(int x, int y, String text, float r, float g, float b) {
+		Color c = new Color(r, g, b);
+		font.drawString(x - getFontWidth(text)/2, y - getFontHeight(text)/2, text, c);
 	}
 }

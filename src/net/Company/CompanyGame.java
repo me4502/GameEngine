@@ -1,5 +1,6 @@
 package net.Company;
 
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -20,14 +21,11 @@ public abstract class CompanyGame {
 	public CompanyGame() {
 	}
 
-	public void render(GameContainer arg0, Graphics arg1) {
-	}
+	public abstract void render(GameContainer arg0, Graphics arg1);
 
-	public void init(GameContainer arg0) {
-	}
+	public abstract void init(GameContainer arg0);
 
-	public void update(GameContainer arg0, int arg1) {
-	}
+	public abstract void update(GameContainer arg0, int arg1);
 
 	public boolean close() {
 		return true;

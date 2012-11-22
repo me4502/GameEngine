@@ -8,7 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 
-class EngineUtils {
+public class EngineUtils {
 
 	public static boolean hasGotNatives = false;
 	public static File appDir;
@@ -43,7 +43,15 @@ class EngineUtils {
 		}
 	}
 
-	public static File getDirectory() {
+	public static File getAppDir() {
+		if (appDir == null) {
+			appDir = getAppDir(Engine.title.replace(" ", ""));
+		}
+
+		return appDir;
+	}
+
+	public static boolean isInstalling() {
 		if (appDir == null) {
 			appDir = getAppDir(Engine.title.replace(" ", ""));
 		}
@@ -52,13 +60,22 @@ class EngineUtils {
 		if (!natives.exists())
 			natives.mkdir();
 		File os = new File(natives, getOs());
+		return !os.exists();
+	}
+
+	public static void downloadNatives(boolean force) {
+		File natives = new File(appDir, "natives/");
+		if (!natives.exists())
+			natives.mkdir();
+		File os = new File(natives, getOs());
 		if (!os.exists()) {
 			os.mkdir();
 		}
-		downloadFiles("http://dl.dropbox.com/u/20806998/PS/natives/" + getOs()
-				+ "/files.txt", os);
-
-		return appDir;
+		if(new File(os, "natives.done").exists() && !force) {
+			hasGotNatives = true;
+			return;
+		}
+		downloadFiles("http://dl.dropbox.com/u/20806998/PS/natives/" + getOs() + "/files.txt", os);
 	}
 
 	public static File getAppDir(String par0Str) {
@@ -77,8 +94,8 @@ class EngineUtils {
 			}
 		} else if (getOs().equalsIgnoreCase("macosx")) {
 			file = new File(s, new StringBuilder()
-					.append("Library/Application Support/").append(par0Str)
-					.toString());
+			.append("Library/Application Support/").append(par0Str)
+			.toString());
 		} else if (getOs().equalsIgnoreCase("solaris")) {
 			file = new File(s, new StringBuilder().append('.').append(par0Str)
 					.append('/').toString());
@@ -92,8 +109,8 @@ class EngineUtils {
 
 		if (!file.exists() && !file.mkdirs()) {
 			throw new RuntimeException(new StringBuilder()
-					.append("The working directory could not be created: ")
-					.append(file).toString());
+			.append("The working directory could not be created: ")
+			.append(file).toString());
 		} else {
 			return file;
 		}
@@ -103,8 +120,7 @@ class EngineUtils {
 		try {
 			URL url = new URL(list);
 			URLConnection urlconnection = url.openConnection();
-			urlconnection.setReadTimeout(5000);
-			urlconnection.setDoOutput(true);
+			//urlconnection.setDoOutput(true);
 			BufferedReader bufferedreader = new BufferedReader(
 					new InputStreamReader(urlconnection.getInputStream()));
 			String s;
@@ -113,8 +129,10 @@ class EngineUtils {
 						s));
 			}
 			bufferedreader.close();
-			if (hasGotNatives == false)
+			if (hasGotNatives == false) {
+				new File(outputDir, "natives.done").createNewFile();
 				hasGotNatives = true;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -122,7 +140,7 @@ class EngineUtils {
 
 	public static void downloadFile(final String url, final File out) {
 		if (out.exists())
-			return;
+			out.delete();
 		try {
 			URL url1 = new URL(url);
 			java.nio.channels.ReadableByteChannel readablebytechannel = Channels

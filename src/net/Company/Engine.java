@@ -1,9 +1,19 @@
 package net.Company;
 
-import org.newdawn.slick.AppGameContainer;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Label;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 
 public class Engine extends BasicGame {
@@ -18,6 +28,7 @@ public class Engine extends BasicGame {
 	public static boolean Debug = false;
 	public static int targetFrames = 120;
 	public static boolean Fullscreen = false;
+	public static boolean Resizable = false;
 
 	public static String title = "Game Engine";
 
@@ -31,13 +42,19 @@ public class Engine extends BasicGame {
 
 	public static CompanyGame game;
 
-	public static AppGameContainer app;
-
 	public static ConfigurationManager config;
 
 	boolean hasInitialized = false;
 
-	public static void setup(String title, CompanyGame game, int x, int y) {
+	public static JFrame gameFrame;
+
+	boolean paused = false;
+
+	static CanvasGameContainer app;
+
+	public static ScalableGame scaleable;
+
+	public static void setup(String title, CompanyGame game, int x, int y, boolean force) {
 		try {
 			Engine.game = game;
 			Engine.title = title;
@@ -45,38 +62,79 @@ public class Engine extends BasicGame {
 			Engine.height = y;
 			cenX = width / 2;
 			cenY = height / 2;
-			System.out.println(EngineUtils.getDirectory());
+
+			JFrame frame = null;
+			frame = new JFrame(EngineUtils.isInstalling() ? "Installing!" : "Loading!");
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.getContentPane().add(new Label(EngineUtils.isInstalling() ? "Installing!" : "Loading!"), BorderLayout.CENTER);
+			frame.pack();
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			int w = frame.getSize().width;
+			int h = frame.getSize().height;
+			int fx = (dim.width-w)/2;
+			int fy = (dim.height-h)/2;
+			frame.setLocation(fx, fy);
+
+			System.out.println(EngineUtils.getAppDir());
+			EngineUtils.downloadNatives(force);
+
 			config = new ConfigurationManager();
 			config.load();
 			while (EngineUtils.hasGotNatives == false) {
-
+				if(!frame.isVisible())
+					frame.setVisible(true);
 			}
+
+			frame.dispose();
+
 			System.setProperty(
 					"org.lwjgl.librarypath",
-					EngineUtils.getDirectory() + "/natives/"
+					EngineUtils.getAppDir() + "/natives/"
 							+ EngineUtils.getOs() + "");
-			app = new AppGameContainer(new Engine(title));
-			app.setDisplayMode(width, height, Fullscreen);
-			app.setVSync(VSync);
-			app.setMultiSample(AA);
-			app.setVerbose(Debug);
-			app.setTargetFrameRate(targetFrames);
-			app.setShowFPS(Debug);
+
+			gameFrame = new JFrame(title);
+			gameFrame.setSize(width, height);
+			gameFrame.setLocationRelativeTo(null);
+
+			scaleable = new ScalableGame(new Engine(title), width, height);
+			app = new CanvasGameContainer(scaleable);
+			app.getContainer().setVSync(VSync);
+			app.getContainer().setMultiSample(AA);
+			app.getContainer().setVerbose(Debug);
+			app.getContainer().setTargetFrameRate(targetFrames);
+			app.getContainer().setShowFPS(Debug);
+			app.getContainer().setAlwaysRender(true);
+
+			gameFrame.add(app);
+			gameFrame.setResizable(true);
+
+			gameFrame.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					gameFrame.dispose();
+					app.getContainer().exit();
+					System.exit(0);
+				}
+			});
+			gameFrame.setVisible(true);
+
 			app.start();
-		} catch (SlickException e) {
-			e.printStackTrace();
+		} catch (UnsatisfiedLinkError e) {
+			setup(title,game,width,height,true);
+		} catch (SlickException e1) {
+			e1.printStackTrace();
 		}
 	}
 
 	@Override
-	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
+	public void render(GameContainer arg0, Graphics arg1) {
 		if (!hasInitialized)
 			return;
 		game.render(arg0, arg1);
 	}
 
 	@Override
-	public void init(GameContainer arg0) throws SlickException {
+	public void init(GameContainer arg0) {
 		arg0.getInput().addMouseListener(new InputListener());
 		arg0.getInput().addKeyListener(new InputListener());
 		game.init(arg0);
@@ -84,7 +142,7 @@ public class Engine extends BasicGame {
 	}
 
 	@Override
-	public void update(GameContainer arg0, int arg1) throws SlickException {
+	public void update(GameContainer arg0, int arg1) {
 		if (!hasInitialized)
 			return;
 		mouseX = arg0.getInput().getMouseX();
@@ -96,5 +154,13 @@ public class Engine extends BasicGame {
 	public boolean closeRequested() {
 		config.save();
 		return game.close();
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+
+	public boolean getPaused() {
+		return paused;
 	}
 }
