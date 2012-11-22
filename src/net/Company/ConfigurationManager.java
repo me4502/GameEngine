@@ -11,7 +11,7 @@ public class ConfigurationManager {
 	File configFile;
 
 	public ConfigurationManager() {
-		configFile = new File(EngineUtils.getDirectory(), "config.txt");
+		configFile = new File(EngineUtils.getAppDir(), "config.txt");
 	}
 
 	public void load() {
