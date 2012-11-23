@@ -170,20 +170,21 @@ public class Rendering {
 		return 0xFF000000 | x & 0xFFFFFF;
 	}
 
-	public static void drawLine(int i, int j, int k, int l, int i1, float r,
-			float g, float b) {
-		//GL11.glDisable(3553 /* GL_TEXTURE_2D */);
-		GL11.glEnable(GL11.GL_BLEND);
+	public static void drawLine(int i, int j, int k, int l, int i1, float r, float g, float b) {
+		drawLine(i,j,k,l,i1,r,g,b,1f);
+	}
+
+	public static void drawLine(int i, int j, int k, int l, int i1, float r, float g, float b, float a) {
+		GL11.glDisable(3553 /* GL_TEXTURE_2D */);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-		GL11.glColor4f(r, g, b, 1f);
+		GL11.glColor4f(r, g, b, a);
 		GL11.glLineWidth(i1);
 		GL11.glBegin(GL11.GL_LINES);
 		GL11.glVertex2i(i, j);
 		GL11.glVertex2i(k, l);
 		GL11.glEnd();
-		GL11.glDisable(GL11.GL_BLEND);
-		//GL11.glEnable(3553 /* GL_TEXTURE_2D */);
+		GL11.glEnable(3553 /* GL_TEXTURE_2D */);
 	}
 
 	public static void rotate(double deg, int x, int y, int z) {

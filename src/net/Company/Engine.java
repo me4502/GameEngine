@@ -13,7 +13,6 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.ScalableGame;
 import org.newdawn.slick.SlickException;
 
 public class Engine extends BasicGame {
@@ -50,9 +49,9 @@ public class Engine extends BasicGame {
 
 	boolean paused = false;
 
-	static CanvasGameContainer app;
+	public static CanvasGameContainer app;
 
-	public static ScalableGame scaleable;
+	//public static ScalableGame scaleable;
 
 	public static void setup(String title, CompanyGame game, int x, int y, boolean force) {
 		try {
@@ -96,8 +95,8 @@ public class Engine extends BasicGame {
 			gameFrame.setSize(width, height);
 			gameFrame.setLocationRelativeTo(null);
 
-			scaleable = new ScalableGame(new Engine(title), width, height);
-			app = new CanvasGameContainer(scaleable);
+			//scaleable = new ScalableGame(new Engine(title), width, height);
+			app = new CanvasGameContainer(new Engine(title));
 			app.getContainer().setVSync(VSync);
 			app.getContainer().setMultiSample(AA);
 			app.getContainer().setVerbose(Debug);

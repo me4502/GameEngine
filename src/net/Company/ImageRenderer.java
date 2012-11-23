@@ -69,7 +69,7 @@ public class ImageRenderer {
 	 */
 	public boolean draw(String name, int x, int y, int rotation) {
 		try {
-			images.get(name).setCenterOfRotation(16,16);
+			images.get(name).setCenterOfRotation(8,8);
 			if(rotation != 0)
 				images.get(name).setRotation(rotation);
 			images.get(name).draw(x,y);
@@ -92,7 +92,7 @@ public class ImageRenderer {
 
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation) {
 		try {
-			images.get(name).setCenterOfRotation(16,16);
+			images.get(name).setCenterOfRotation(8,8);
 			if(rotation != 0)
 				images.get(name).setRotation(rotation);
 			images.get(name).draw(x, y, scaleX * 16.1f, scaleY * 16.1f);
