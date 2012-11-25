@@ -134,8 +134,9 @@ public class Engine extends BasicGame {
 
 	@Override
 	public void init(GameContainer arg0) {
-		arg0.getInput().addMouseListener(new InputListener());
-		arg0.getInput().addKeyListener(new InputListener());
+
+		arg0.getInput().addMouseListener(this);
+		arg0.getInput().addKeyListener(this);
 		game.init(arg0);
 		hasInitialized = true;
 	}
@@ -144,8 +145,10 @@ public class Engine extends BasicGame {
 	public void update(GameContainer arg0, int arg1) {
 		if (!hasInitialized)
 			return;
-		mouseX = arg0.getInput().getMouseX();
-		mouseY = arg0.getInput().getMouseY();
+		if(mouseX != arg0.getInput().getMouseX() || mouseY != arg0.getInput().getMouseY()) {
+			mouseX = arg0.getInput().getMouseX();
+			mouseY = arg0.getInput().getMouseY();
+		}
 		game.update(arg0, arg1);
 	}
 
@@ -161,5 +164,53 @@ public class Engine extends BasicGame {
 
 	public boolean getPaused() {
 		return paused;
+	}
+
+
+	/* Input Listeners */
+
+	@Override
+	public boolean isAcceptingInput() {
+		return Engine.game.isAcceptingInput();
+	}
+
+	@Override
+	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
+		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
+	}
+
+	@Override
+	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
+		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
+	}
+
+	@Override
+	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
+		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
+	}
+
+	@Override
+	public void mousePressed(int arg0, int arg1, int arg2) {
+		Engine.game.mousePressed(arg0, arg1, arg2);
+	}
+
+	@Override
+	public void mouseReleased(int arg0, int arg1, int arg2) {
+		Engine.game.mouseReleased(arg0, arg1, arg2);
+	}
+
+	@Override
+	public void mouseWheelMoved(int arg0) {
+		Engine.game.mouseWheelMoved(arg0);
+	}
+
+	@Override
+	public void keyPressed(int arg0, char arg1) {
+		Engine.game.keyPressed(arg0, arg1);
+	}
+
+	@Override
+	public void keyReleased(int arg0, char arg1) {
+		Engine.game.keyReleased(arg0, arg1);
 	}
 }

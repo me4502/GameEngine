@@ -43,13 +43,13 @@ public class FontRenderer {
 		return font.getWidth(text);
 	}
 
-	public void drawFont(int x, int y, String text, float r, float g, float b) {
-		Color c = new Color(r, g, b);
+	public void drawFont(int x, int y, String text, float r, float g, float b, float a) {
+		Color c = new Color(r, g, b, a);
 		font.drawString(x, y, text, c);
 	}
 
-	public void drawCentredFont(int x, int y, String text, float r, float g, float b) {
-		Color c = new Color(r, g, b);
+	public void drawCentredFont(int x, int y, String text, float r, float g, float b, float a) {
+		Color c = new Color(r, g, b, a);
 		font.drawString(x - getFontWidth(text)/2, y - getFontHeight(text)/2, text, c);
 	}
 }
