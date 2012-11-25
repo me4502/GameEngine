@@ -181,12 +181,12 @@ public class Engine extends BasicGame {
 
 	@Override
 	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
+		Engine.game.mouseDragged(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
+		Engine.game.mouseMoved(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
