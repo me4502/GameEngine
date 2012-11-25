@@ -68,18 +68,7 @@ public class ImageRenderer {
 	 * @return if image existed.
 	 */
 	public boolean draw(String name, int x, int y, int rotation) {
-		try {
-			images.get(name).setCenterOfRotation(8,8);
-			if(rotation != 0)
-				images.get(name).setRotation(rotation);
-			images.get(name).draw(x,y);
-			images.get(name).setRotation(0);
-			return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		return draw(name,x,y,1f,1f,rotation);
 	}
 
 	public int getGlTexture(String name) {
@@ -91,8 +80,17 @@ public class ImageRenderer {
 	}
 
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation) {
+		return draw(name,x,y,scaleX,scaleY,rotation,1f);
+	}
+
+	public boolean draw(String name, int x, int y, int rotation, float alpha) {
+		return draw(name,x,y,1f,1f,rotation,alpha);
+	}
+
+	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation, float alpha) {
 		try {
 			images.get(name).setCenterOfRotation(8,8);
+			images.get(name).setAlpha(alpha);
 			if(rotation != 0)
 				images.get(name).setRotation(rotation);
 			images.get(name).draw(x, y, scaleX * 16.1f, scaleY * 16.1f);
