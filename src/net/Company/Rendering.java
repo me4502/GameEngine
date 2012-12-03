@@ -170,6 +170,13 @@ public class Rendering {
 		return 0xFF000000 | x & 0xFFFFFF;
 	}
 
+	public static void drawStartedLine(int i, int j, int k, int l, int i1, float r, float g, float b, float a) {
+		GL11.glColor4f(1.0f,1.0f,1.0f,0.3f);
+		GL11.glLineWidth(1);
+		GL11.glVertex2i(i, j);
+		GL11.glVertex2i(k, l);
+	}
+
 	public static void drawLine(int i, int j, int k, int l, int i1, float r, float g, float b) {
 		drawLine(i,j,k,l,i1,r,g,b,1f);
 	}
@@ -209,7 +216,7 @@ public class Rendering {
 	}
 
 	public static void drawCircle(int x1, int y1, double radius) {
-		int seg = 360;
+		int seg = 45;
 		float theta = (float) (2 * 3.1415926 / seg);
 		float tangetial_factor = (float) Math.tan(theta);//calculate the tangential factor
 
@@ -247,7 +254,7 @@ public class Rendering {
 	public static void drawFilledCircle(int x1, int y1, double radius) {
 		while(radius > 0) {
 			drawCircle(x1,y1,radius);
-			radius -= 0.2;
+			radius -= 0.3;
 		}
 	}
 

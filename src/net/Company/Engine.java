@@ -135,8 +135,6 @@ public class Engine extends BasicGame {
 	@Override
 	public void init(GameContainer arg0) {
 
-		arg0.getInput().addMouseListener(this);
-		arg0.getInput().addKeyListener(this);
 		game.init(arg0);
 		hasInitialized = true;
 	}
