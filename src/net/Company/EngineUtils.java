@@ -10,10 +10,17 @@ import java.nio.channels.Channels;
 
 public class EngineUtils {
 
-	public static boolean hasGotNatives = false;
-	public static File appDir;
+	Engine engine;
 
-	static String getOs() {
+	public EngineUtils(Engine engine) {
+
+		this.engine = engine;
+	}
+
+	public boolean hasGotNatives = false;
+	public File appDir;
+
+	protected String getOs() {
 		String s = System.getProperty("os.name").toLowerCase();
 
 		if (s.contains("win")) {
@@ -43,17 +50,17 @@ public class EngineUtils {
 		}
 	}
 
-	public static File getAppDir() {
+	public File getAppDir() {
 		if (appDir == null) {
-			appDir = getAppDir(Engine.title.replace(" ", ""));
+			appDir = getAppDir(engine.title.replace(" ", ""));
 		}
 
 		return appDir;
 	}
 
-	public static boolean isInstalling() {
+	public boolean isInstalling() {
 		if (appDir == null) {
-			appDir = getAppDir(Engine.title.replace(" ", ""));
+			appDir = getAppDir(engine.title.replace(" ", ""));
 		}
 
 		File natives = new File(appDir, "natives/");
@@ -63,7 +70,7 @@ public class EngineUtils {
 		return !os.exists();
 	}
 
-	public static void downloadNatives(boolean force) {
+	public void downloadNatives(boolean force) {
 		File natives = new File(appDir, "natives/");
 		if (!natives.exists())
 			natives.mkdir();
@@ -78,7 +85,7 @@ public class EngineUtils {
 		downloadFiles("http://dl.dropbox.com/u/20806998/PS/natives/" + getOs() + "/files.txt", os);
 	}
 
-	public static File getAppDir(String par0Str) {
+	public File getAppDir(String par0Str) {
 		String s = System.getProperty("user.home", ".");
 		File file = null;
 
@@ -116,7 +123,7 @@ public class EngineUtils {
 		}
 	}
 
-	public static void downloadFiles(String list, File outputDir) {
+	public void downloadFiles(String list, File outputDir) {
 		try {
 			URL url = new URL(list);
 			URLConnection urlconnection = url.openConnection();
@@ -138,7 +145,7 @@ public class EngineUtils {
 		}
 	}
 
-	public static void downloadFile(final String url, final File out) {
+	public void downloadFile(final String url, final File out) {
 		if (out.exists())
 			out.delete();
 		try {

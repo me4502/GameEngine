@@ -5,12 +5,20 @@ import java.net.URL;
 import java.util.HashMap;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 
 public class ImageRenderer {
 
 	private HashMap<String, Image> images = new HashMap<String, Image>();
 
-	public ImageRenderer() {
+	Engine engine;
+
+	public ImageRenderer(Engine engine) {
+		this.engine = engine;
+	}
+
+	public void addImage(String name, Image image) {
+		images.put(name, image);
 	}
 
 	/**
@@ -23,7 +31,7 @@ public class ImageRenderer {
 	public boolean registerImage(String name, String path) {
 		try {
 			System.out.println("Registering image: " + name + " with ID " + images.size());
-			images.put(name, new Image(new File(EngineUtils.getAppDir(), path).getAbsolutePath()));
+			images.put(name, new Image(new File(engine.utilities.getAppDir(), path).getAbsolutePath()));
 			return true;
 		}
 		catch(Exception e) {
@@ -101,5 +109,25 @@ public class ImageRenderer {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public SpriteSheet getContainedSpriteSheet(String path, int x, int y) {
+
+		try {
+			try {
+				URL url = this.getClass().getResource(path);
+				File f = new File(url.getFile());
+				System.err.println(f.getPath());
+				return new SpriteSheet(new Image(f.getPath()), x, y);
+			}
+			catch(Exception e) {
+				return new SpriteSheet(new Image(path), x, y);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }
