@@ -97,12 +97,14 @@ public class ImageRenderer {
 
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation, float alpha) {
 		try {
+			Rendering.setTextureState(true);
 			images.get(name).setCenterOfRotation(8,8);
 			images.get(name).setAlpha(alpha);
 			if(rotation != 0)
 				images.get(name).setRotation(rotation);
 			images.get(name).draw(x, y, scaleX * 16.1f, scaleY * 16.1f);
 			images.get(name).setRotation(0);
+			Rendering.setTextureState(false);
 			return true;
 		}
 		catch(Exception e) {
