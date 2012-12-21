@@ -19,27 +19,29 @@ public class Engine extends BasicGame {
 
 	public Engine(String title) {
 		super(title);
+		this.title = title;
+		utilities = new EngineUtils(this);
 	}
 
 	/* Settings */
-	public static int AA = 0;
-	public static boolean VSync = true;
-	public static boolean Debug = false;
-	public static int targetFrames = 120;
-	public static boolean Fullscreen = false;
-	public static boolean Resizable = false;
+	public int AA = 0;
+	public boolean VSync = true;
+	public boolean Debug = false;
+	public int targetFrames = 120;
+	public boolean Fullscreen = false;
+	public boolean Resizable = false;
 
-	public static String title = "Game Engine";
+	public String title = "Game Engine";
 
-	public static int width = 612;
-	public static int height = 384;
-	public static int cenX = width / 2;
-	public static int cenY = height / 2;
+	public int width = 612;
+	public int height = 384;
+	public int cenX = width / 2;
+	public int cenY = height / 2;
 
-	public static int mouseX;
-	public static int mouseY;
+	public int mouseX;
+	public int mouseY;
 
-	public static CompanyGame game;
+	public CompanyGame game;
 
 	public static ConfigurationManager config;
 
@@ -53,19 +55,25 @@ public class Engine extends BasicGame {
 
 	//public static ScalableGame scaleable;
 
-	public static void setup(String title, CompanyGame game, int x, int y, boolean force) {
+	private int speed = 1;
+
+	public EngineUtils utilities;
+
+	public static Engine setup(String title, CompanyGame game, int x, int y, boolean force) {
 		try {
-			Engine.game = game;
-			Engine.title = title;
-			Engine.width = x;
-			Engine.height = y;
-			cenX = width / 2;
-			cenY = height / 2;
+
+			Engine engine = new Engine(title);
+
+			engine.game = game;
+			engine.width = x;
+			engine.height = y;
+			engine.cenX = engine.width / 2;
+			engine.cenY = engine.height / 2;
 
 			JFrame frame = null;
-			frame = new JFrame(EngineUtils.isInstalling() ? "Installing!" : "Loading!");
+			frame = new JFrame(engine.utilities.isInstalling() ? "Installing!" : "Loading!");
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			frame.getContentPane().add(new Label(EngineUtils.isInstalling() ? "Installing!" : "Loading!"), BorderLayout.CENTER);
+			frame.getContentPane().add(new Label(engine.utilities.isInstalling() ? "Installing!" : "Loading!"), BorderLayout.CENTER);
 			frame.pack();
 			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 			int w = frame.getSize().width;
@@ -74,34 +82,30 @@ public class Engine extends BasicGame {
 			int fy = (dim.height-h)/2;
 			frame.setLocation(fx, fy);
 
-			System.out.println(EngineUtils.getAppDir());
-			EngineUtils.downloadNatives(force);
+			System.out.println(engine.utilities.getAppDir());
+			engine.utilities.downloadNatives(force);
 
-			config = new ConfigurationManager();
+			config = new ConfigurationManager(engine);
 			config.load();
-			while (EngineUtils.hasGotNatives == false) {
+			while (engine.utilities.hasGotNatives == false) {
 				if(!frame.isVisible())
 					frame.setVisible(true);
 			}
 
 			frame.dispose();
 
-			System.setProperty(
-					"org.lwjgl.librarypath",
-					EngineUtils.getAppDir() + "/natives/"
-							+ EngineUtils.getOs() + "");
+			System.setProperty("org.lwjgl.librarypath", engine.utilities.getAppDir() + "/natives/" + engine.utilities.getOs() + "");
 
 			gameFrame = new JFrame(title);
-			gameFrame.setSize(width, height);
+			gameFrame.setSize(engine.width, engine.height);
 			gameFrame.setLocationRelativeTo(null);
 
-			//scaleable = new ScalableGame(new Engine(title), width, height);
-			app = new CanvasGameContainer(new Engine(title));
-			app.getContainer().setVSync(VSync);
-			app.getContainer().setMultiSample(AA);
-			app.getContainer().setVerbose(Debug);
-			app.getContainer().setTargetFrameRate(targetFrames);
-			app.getContainer().setShowFPS(Debug);
+			app = new CanvasGameContainer(engine);
+			app.getContainer().setVSync(engine.VSync);
+			app.getContainer().setMultiSample(engine.AA);
+			app.getContainer().setVerbose(engine.Debug);
+			app.getContainer().setTargetFrameRate(engine.targetFrames);
+			app.getContainer().setShowFPS(engine.Debug);
 			app.getContainer().setAlwaysRender(true);
 
 			gameFrame.add(app);
@@ -118,11 +122,15 @@ public class Engine extends BasicGame {
 			gameFrame.setVisible(true);
 
 			app.start();
+
+			return engine;
 		} catch (UnsatisfiedLinkError e) {
-			setup(title,game,width,height,true);
+			setup(title,game,x,y,true);
 		} catch (SlickException e1) {
 			e1.printStackTrace();
 		}
+
+		return null;
 	}
 
 	@Override
@@ -143,11 +151,13 @@ public class Engine extends BasicGame {
 	public void update(GameContainer arg0, int arg1) {
 		if (!hasInitialized)
 			return;
-		if(mouseX != arg0.getInput().getMouseX() || mouseY != arg0.getInput().getMouseY()) {
-			mouseX = arg0.getInput().getMouseX();
-			mouseY = arg0.getInput().getMouseY();
+		for(int i = 0; i < speed; i++) {
+			if(mouseX != arg0.getInput().getMouseX() || mouseY != arg0.getInput().getMouseY()) {
+				mouseX = arg0.getInput().getMouseX();
+				mouseY = arg0.getInput().getMouseY();
+			}
+			game.update(arg0, arg1);
 		}
-		game.update(arg0, arg1);
 	}
 
 	@Override
@@ -164,51 +174,58 @@ public class Engine extends BasicGame {
 		return paused;
 	}
 
+	public void setSpeedScale(int speed) {
+		this.speed = speed;
+	}
+
+	public int getSpeedScale() {
+		return speed;
+	}
 
 	/* Input Listeners */
 
 	@Override
 	public boolean isAcceptingInput() {
-		return Engine.game.isAcceptingInput();
+		return game.isAcceptingInput();
 	}
 
 	@Override
 	public void mouseClicked(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseClicked(arg0, arg1, arg2, arg3);
+		game.mouseClicked(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mouseDragged(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseDragged(arg0, arg1, arg2, arg3);
+		game.mouseDragged(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mouseMoved(int arg0, int arg1, int arg2, int arg3) {
-		Engine.game.mouseMoved(arg0, arg1, arg2, arg3);
+		game.mouseMoved(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public void mousePressed(int arg0, int arg1, int arg2) {
-		Engine.game.mousePressed(arg0, arg1, arg2);
+		game.mousePressed(arg0, arg1, arg2);
 	}
 
 	@Override
 	public void mouseReleased(int arg0, int arg1, int arg2) {
-		Engine.game.mouseReleased(arg0, arg1, arg2);
+		game.mouseReleased(arg0, arg1, arg2);
 	}
 
 	@Override
 	public void mouseWheelMoved(int arg0) {
-		Engine.game.mouseWheelMoved(arg0);
+		game.mouseWheelMoved(arg0);
 	}
 
 	@Override
 	public void keyPressed(int arg0, char arg1) {
-		Engine.game.keyPressed(arg0, arg1);
+		game.keyPressed(arg0, arg1);
 	}
 
 	@Override
 	public void keyReleased(int arg0, char arg1) {
-		Engine.game.keyReleased(arg0, arg1);
+		game.keyReleased(arg0, arg1);
 	}
 }

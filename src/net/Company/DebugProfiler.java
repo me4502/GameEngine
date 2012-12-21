@@ -58,8 +58,7 @@ public class DebugProfiler {
 	}
 
 	public void drawTimes() {
-		Rendering.drawFont(x, y, name + ": " + (lastTime - firstTime) + "ms",
-				255, 255, 255);
+		Rendering.drawFont(x, y, name + ": " + (lastTime - firstTime) + "ms", 255, 255, 255);
 		int num = 1;
 		for (String s : extraTimes) {
 			Rendering.drawFont(x + 3, y + num * 10, s, 255, 255, 255);

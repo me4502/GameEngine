@@ -8,10 +8,12 @@ import java.io.PrintWriter;
 
 public class ConfigurationManager {
 
+	Engine engine;
 	File configFile;
 
-	public ConfigurationManager() {
-		configFile = new File(EngineUtils.getAppDir(), "config.txt");
+	public ConfigurationManager(Engine engine) {
+		this.engine = engine;
+		configFile = new File(engine.utilities.getAppDir(), "config.txt");
 	}
 
 	public void load() {
@@ -21,17 +23,17 @@ public class ConfigurationManager {
 			while ((line = br.readLine()) != null) {
 				String[] args = line.split(":");
 				if (args[0].equalsIgnoreCase("AA"))
-					Engine.AA = Integer.parseInt(args[1]);
+					engine.AA = Integer.parseInt(args[1]);
 				else if (args[0].equalsIgnoreCase("VSync"))
-					Engine.VSync = Boolean.parseBoolean(args[1]);
+					engine.VSync = Boolean.parseBoolean(args[1]);
 				else if (args[0].equalsIgnoreCase("Debug"))
-					Engine.Debug = Boolean.parseBoolean(args[1]);
+					engine.Debug = Boolean.parseBoolean(args[1]);
 				else if (args[0].equalsIgnoreCase("targetFrames"))
-					Engine.targetFrames = Integer.parseInt(args[1]);
+					engine.targetFrames = Integer.parseInt(args[1]);
 				else if (args[0].equalsIgnoreCase("Fullscreen"))
-					Engine.Fullscreen = Boolean.parseBoolean(args[1]);
+					engine.Fullscreen = Boolean.parseBoolean(args[1]);
 				else
-					Engine.game.configLoad(args);
+					engine.game.configLoad(args);
 			}
 			br.close();
 		} catch (Exception e) {
@@ -42,12 +44,12 @@ public class ConfigurationManager {
 	public void save() {
 		try {
 			PrintWriter p = new PrintWriter(new FileOutputStream(configFile));
-			p.println("AA:" + Engine.AA);
-			p.println("VSync:" + Engine.VSync);
-			p.println("Debug:" + Engine.Debug);
-			p.println("targetFrames:" + Engine.targetFrames);
-			p.println("Fullscreen:" + Engine.Fullscreen);
-			String[] extra = Engine.game.configSave();
+			p.println("AA:" + engine.AA);
+			p.println("VSync:" + engine.VSync);
+			p.println("Debug:" + engine.Debug);
+			p.println("targetFrames:" + engine.targetFrames);
+			p.println("Fullscreen:" + engine.Fullscreen);
+			String[] extra = engine.game.configSave();
 			if (extra != null)
 				for (String s : extra) {
 					p.println(s);
