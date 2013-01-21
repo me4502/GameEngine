@@ -9,6 +9,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -22,6 +24,8 @@ public class Engine extends BasicGame {
 		this.title = title;
 		utilities = new EngineUtils(this);
 	}
+
+	public static int textureResolution = 16;
 
 	/* Settings */
 	public int AA = 0;
@@ -59,10 +63,18 @@ public class Engine extends BasicGame {
 
 	public EngineUtils utilities;
 
+	public void setResizable(boolean resizable) {
+		gameFrame.setResizable(resizable);
+	}
+
+	public boolean getResizable() {
+		return gameFrame.isResizable();
+	}
+
 	public static Engine setup(String title, CompanyGame game, int x, int y, boolean force) {
 		try {
 
-			Engine engine = new Engine(title);
+			final Engine engine = new Engine(title);
 
 			engine.game = game;
 			engine.width = x;
@@ -114,6 +126,7 @@ public class Engine extends BasicGame {
 			gameFrame.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosing(WindowEvent e) {
+					engine.closeRequested();
 					gameFrame.dispose();
 					app.getContainer().exit();
 					System.exit(0);
@@ -143,6 +156,8 @@ public class Engine extends BasicGame {
 	@Override
 	public void init(GameContainer arg0) {
 
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		game.init(arg0);
 		hasInitialized = true;
 	}

@@ -9,7 +9,7 @@ import org.newdawn.slick.SpriteSheet;
 
 public class ImageRenderer {
 
-	private HashMap<String, Image> images = new HashMap<String, Image>();
+	private HashMap<String, DynamicImage> images = new HashMap<String, DynamicImage>();
 
 	Engine engine;
 
@@ -17,8 +17,13 @@ public class ImageRenderer {
 		this.engine = engine;
 	}
 
-	public void addImage(String name, Image image) {
+	public void addImage(String name, DynamicImage image) {
 		images.put(name, image);
+	}
+
+	public DynamicImage getImage(String name) {
+
+		return images.get(name);
 	}
 
 	/**
@@ -31,7 +36,7 @@ public class ImageRenderer {
 	public boolean registerImage(String name, String path) {
 		try {
 			System.out.println("Registering image: " + name + " with ID " + images.size());
-			images.put(name, new Image(new File(engine.utilities.getAppDir(), path).getAbsolutePath()));
+			images.put(name, new DynamicImage(new File(engine.utilities.getAppDir(), path).getAbsolutePath()));
 			return true;
 		}
 		catch(Exception e) {
@@ -54,10 +59,10 @@ public class ImageRenderer {
 				URL url = this.getClass().getResource(path);
 				File f = new File(url.getFile());
 				System.err.println(f.getPath());
-				images.put(name, new Image(f.getPath()));
+				images.put(name, new DynamicImage(f.getPath()));
 			}
 			catch(Exception e) {
-				images.put(name, new Image(path));
+				images.put(name, new DynamicImage(path));
 			}
 			return true;
 		}
@@ -80,11 +85,11 @@ public class ImageRenderer {
 	}
 
 	public int getGlTexture(String name) {
-		return images.get(name).getTexture().getTextureID();
+		return images.get(name).getImage().getTexture().getTextureID();
 	}
 
 	public void bindGlTexture(String name) {
-		images.get(name).getTexture().bind();
+		images.get(name).getImage().getTexture().bind();
 	}
 
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation) {
@@ -98,12 +103,15 @@ public class ImageRenderer {
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation, float alpha) {
 		try {
 			Rendering.setTextureState(true);
-			images.get(name).setCenterOfRotation(8,8);
-			images.get(name).setAlpha(alpha);
+			images.get(name).getImage().setCenterOfRotation(images.get(name).getResolution()/2,images.get(name).getResolution()/2);
+			images.get(name).getImage().setAlpha(alpha);
 			if(rotation != 0)
-				images.get(name).setRotation(rotation);
-			images.get(name).draw(x, y, scaleX * 16.1f, scaleY * 16.1f);
-			images.get(name).setRotation(0);
+				images.get(name).getImage().setRotation(rotation);
+			int res = Engine.textureResolution;
+			if(Engine.textureResolution != images.get(name).getResolution())
+				res = images.get(name).getResolution() / (images.get(name).getResolution() / Engine.textureResolution);
+			images.get(name).getImage().draw(x, y, scaleX * res, scaleY * res);
+			images.get(name).getImage().setRotation(0);
 			Rendering.setTextureState(false);
 			return true;
 		}
@@ -113,17 +121,27 @@ public class ImageRenderer {
 		}
 	}
 
-	public SpriteSheet getContainedSpriteSheet(String path, int x, int y) {
+	/**
+	 * Returns a SpriteSheet with a dynamic resolution. (All items need to be the same resolution).
+	 * 
+	 * @param path
+	 * @param width The amount of images across
+	 * @param height The amount of images vertically
+	 * @return
+	 */
+	public SpriteSheet getContainedSpriteSheet(String path, int width, int height) {
 
 		try {
 			try {
 				URL url = this.getClass().getResource(path);
 				File f = new File(url.getFile());
 				System.err.println(f.getPath());
-				return new SpriteSheet(new Image(f.getPath()), x, y);
+				Image i = new Image(f.getPath());
+				return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
 			}
 			catch(Exception e) {
-				return new SpriteSheet(new Image(path), x, y);
+				Image i = new Image(path);
+				return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
 			}
 		}
 		catch(Exception e) {
