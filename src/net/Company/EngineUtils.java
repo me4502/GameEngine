@@ -82,7 +82,7 @@ public class EngineUtils {
 			hasGotNatives = true;
 			return;
 		}
-		downloadFiles("http://dl.dropbox.com/u/20806998/PS/natives/" + getOs() + "/files.txt", os);
+		downloadFiles("http://me4502.com/downloads/natives/" + getOs() + "/files.txt", os);
 	}
 
 	public File getAppDir(String par0Str) {

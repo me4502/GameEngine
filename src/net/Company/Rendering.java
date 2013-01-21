@@ -110,7 +110,6 @@ public class Rendering {
 	}
 
 	public static void drawRectLine(int x1, int y1, int x2, int y2, double r, double g, double b) {
-		//GL11.glDisable(3553 /* GL_TEXTURE_2D */);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor3d(r, g, b);
@@ -120,7 +119,6 @@ public class Rendering {
 		GL11.glVertex2d(x2, y2);
 		GL11.glVertex2d(x1, y2);
 		GL11.glEnd();
-		//GL11.glEnable(3553 /* GL_TEXTURE_2D */);
 	}
 
 	/* Utility Functions */
@@ -171,6 +169,7 @@ public class Rendering {
 				return;
 			}
 			drawing = true;
+			GL11.glBegin(GL11.GL_TEXTURE_2D);
 			GL11.glBegin(GL11.GL_LINES);
 		}
 
@@ -228,9 +227,13 @@ public class Rendering {
 			Vector2f.add(leftSide, end, four);
 
 			GL11.glBegin(GL11.GL_QUADS);
+			GL11.glTexCoord2f(0,0);
 			GL11.glVertex3f(one.x, one.y, 0);
+			GL11.glTexCoord2f(1,0);
 			GL11.glVertex3f(two.x, two.y, 0);
+			GL11.glTexCoord2f(1,1);
 			GL11.glVertex3f(three.x, three.y, 0);
+			GL11.glTexCoord2f(0,1);
 			GL11.glVertex3f(four.x, four.y, 0);
 			GL11.glEnd();
 		}
@@ -271,8 +274,6 @@ public class Rendering {
 
 	public static void drawQuad(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, float r, float g, float b) {
 		GL11.glPushMatrix();
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 		GL11.glColor4f(r, g, b, 1f);
 		GL11.glBegin(GL11.GL_QUAD_STRIP);
 		GL11.glVertex2i(x1, y1);
@@ -340,6 +341,9 @@ public class Rendering {
 		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
 		GL11.glColor4f(r,g,b,a);
 		GL11.glVertex2f(x1,y1);
+
+		GL11.glTexCoord2d(0.5, 0.5);
+
 		double seg = 2*Math.PI / 45;
 		for(angle = 0; angle < 2 * Math.PI + seg; angle += seg) {
 			x2 = x1 + Math.sin(angle)*radius;

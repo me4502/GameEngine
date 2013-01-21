@@ -18,6 +18,8 @@ public class ConfigurationManager {
 
 	public void load() {
 		try {
+			if(!configFile.exists())
+				configFile.createNewFile();
 			BufferedReader br = new BufferedReader(new FileReader(configFile));
 			String line = "";
 			while ((line = br.readLine()) != null) {
@@ -43,6 +45,8 @@ public class ConfigurationManager {
 
 	public void save() {
 		try {
+			if(!configFile.exists())
+				configFile.createNewFile();
 			PrintWriter p = new PrintWriter(new FileOutputStream(configFile));
 			p.println("AA:" + engine.AA);
 			p.println("VSync:" + engine.VSync);
