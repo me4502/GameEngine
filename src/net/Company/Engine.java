@@ -10,12 +10,13 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.CanvasGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+
+import com.me4502.MAPL.slick.SlickMAPL;
 
 public class Engine extends BasicGame {
 
@@ -24,8 +25,6 @@ public class Engine extends BasicGame {
 		this.title = title;
 		utilities = new EngineUtils(this);
 	}
-
-	public static int textureResolution = 16;
 
 	/* Settings */
 	public int AA = 0;
@@ -73,7 +72,7 @@ public class Engine extends BasicGame {
 
 	public static Engine setup(String title, CompanyGame game, int x, int y, boolean force) {
 		try {
-
+			new SlickMAPL();
 			final Engine engine = new Engine(title);
 
 			engine.game = game;
@@ -93,6 +92,7 @@ public class Engine extends BasicGame {
 			int fx = (dim.width-w)/2;
 			int fy = (dim.height-h)/2;
 			frame.setLocation(fx, fy);
+			frame.setAlwaysOnTop(true);
 
 			System.out.println(engine.utilities.getAppDir());
 			engine.utilities.downloadNatives(force);
@@ -156,14 +156,43 @@ public class Engine extends BasicGame {
 	@Override
 	public void init(GameContainer arg0) {
 
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		//GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameteri(GL11.GL_TEXTURE_2D,GL11.GL_TEXTURE_WRAP_S,GL11.GL_REPEAT);
 		game.init(arg0);
 		hasInitialized = true;
 	}
 
 	@Override
 	public void update(GameContainer arg0, int arg1) {
+		if(Fullscreen != gameFrame.isUndecorated()) {
+			gameFrame.setVisible(false);
+			gameFrame.dispose();
+			if(Fullscreen) {
+				Toolkit tk = Toolkit.getDefaultToolkit();
+				int xSize = (int) tk.getScreenSize().getWidth();
+				int ySize = (int) tk.getScreenSize().getHeight();
+				gameFrame.setSize(xSize,ySize);
+				gameFrame.setLocation(0, 0);
+			} else {
+				gameFrame.setSize(width, height);
+				gameFrame.setLocationRelativeTo(null);
+			}
+			gameFrame.setAutoRequestFocus(true);
+			gameFrame.setUndecorated(Fullscreen);
+			gameFrame.setVisible(true);
+			gameFrame.toFront();
+			new Thread() {
+				@Override
+				public void run() {
+					synchronized(gameFrame) {
+						gameFrame.setAlwaysOnTop(true);
+						gameFrame.toFront();
+						gameFrame.setAlwaysOnTop(false);
+					}
+				}
+			}.start();
+		}
 		if (!hasInitialized)
 			return;
 		for(int i = 0; i < speed; i++) {

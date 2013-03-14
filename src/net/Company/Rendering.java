@@ -98,9 +98,14 @@ public class Rendering {
 
 	public static void drawRect(int x1, int y1, int x2, int y2, float r,
 			float g, float b) {
+		drawRect(x1,y1,x2,y2,r,g,b,1f);
+	}
+
+	public static void drawRect(int x1, int y1, int x2, int y2, float r,
+			float g, float b, float a) {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glColor3f(r, g, b);
+		GL11.glColor4f(r, g, b, a);
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glVertex2d(x1, y1);
 		GL11.glVertex2d(x2, y1);
@@ -324,12 +329,7 @@ public class Rendering {
 		GL11.glEnd();
 	}
 
-	public static void drawFilledCircle(int x1, int y1, double radius, boolean outline, boolean centre, float r, float g, float b, float a) {
-
-		if(centre) {
-			x1 += radius/4;
-			y1 += radius/4;
-		}
+	public static void drawFilledCircle(int x1, int y1, double radius, boolean outline, float r, float g, float b, float a) {
 
 		if(outline) {
 			drawCircle(x1,y1,radius,r,g,b,1f);

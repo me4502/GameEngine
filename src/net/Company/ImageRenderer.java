@@ -13,11 +13,14 @@ public class ImageRenderer {
 
 	Engine engine;
 
+	public static int baseImageScale = 16;
+
 	public ImageRenderer(Engine engine) {
 		this.engine = engine;
 	}
 
 	public void addImage(String name, DynamicImage image) {
+		System.out.println("Registering image: " + name + " with ID " + images.size());
 		images.put(name, image);
 	}
 
@@ -103,13 +106,13 @@ public class ImageRenderer {
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation, float alpha) {
 		try {
 			Rendering.setTextureState(true);
-			images.get(name).getImage().setCenterOfRotation(images.get(name).getResolution()/2,images.get(name).getResolution()/2);
 			images.get(name).getImage().setAlpha(alpha);
 			if(rotation != 0)
 				images.get(name).getImage().setRotation(rotation);
-			int res = Engine.textureResolution;
-			if(Engine.textureResolution != images.get(name).getResolution())
-				res = images.get(name).getResolution() / (images.get(name).getResolution() / Engine.textureResolution);
+			int res = baseImageScale;
+			if(baseImageScale != images.get(name).getResolution())
+				res = images.get(name).getResolution() / (images.get(name).getResolution() / baseImageScale);
+			images.get(name).getImage().setCenterOfRotation(images.get(name).getResolution()/2,images.get(name).getResolution()/2);
 			images.get(name).getImage().draw(x, y, scaleX * res, scaleY * res);
 			images.get(name).getImage().setRotation(0);
 			Rendering.setTextureState(false);
@@ -136,11 +139,11 @@ public class ImageRenderer {
 				URL url = this.getClass().getResource(path);
 				File f = new File(url.getFile());
 				System.err.println(f.getPath());
-				Image i = new Image(f.getPath());
+				Image i = new Image(f.getPath(), Image.FILTER_NEAREST);
 				return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
 			}
 			catch(Exception e) {
-				Image i = new Image(path);
+				Image i = new Image(path, Image.FILTER_NEAREST);
 				return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
 			}
 		}

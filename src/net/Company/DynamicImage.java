@@ -10,11 +10,14 @@ public class DynamicImage {
 
 	public DynamicImage(Image image) {
 		this.image = image;
-		resolution = image.getWidth();
+		if(image.getWidth() <= image.getHeight())
+			resolution = image.getWidth();
+		else
+			resolution = image.getHeight();
 	}
 
 	public DynamicImage(String absolutePath) throws SlickException {
-		image = new Image(absolutePath);
+		image = new Image(absolutePath, Image.FILTER_NEAREST);
 		resolution = image.getWidth();
 	}
 
