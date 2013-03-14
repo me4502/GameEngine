@@ -24,6 +24,7 @@ public class ConfigurationManager {
 			String line = "";
 			while ((line = br.readLine()) != null) {
 				String[] args = line.split(":");
+				System.out.println(args[0] + ":" + args[1]);
 				if (args[0].equalsIgnoreCase("AA"))
 					engine.AA = Integer.parseInt(args[1]);
 				else if (args[0].equalsIgnoreCase("VSync"))
